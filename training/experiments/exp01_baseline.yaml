@@ -1,0 +1,51 @@
+# Phase 4A Experiment Configuration Template
+# Baseline Training (No Distillation)
+
+experiment_name: "exp01_baseline_student"
+description: "Train lightweight student model from scratch using ground truth images only."
+
+random_seed: 42
+checkpoint_directory: "outputs/runs/exp01_baseline_student/checkpoints"
+
+# Input dataset paths and settings
+dataset:
+  name: "DIV2K"
+  train_hr_path: "datasets/DIV2K/DIV2K_train_HR"
+  patch_size: 128
+  batch_size: 16
+  num_workers: 4
+
+# Optimization configurations
+epochs: 100
+learning_rate: 0.0001
+optimizer:
+  type: "Adam"
+  weight_decay: 0.0
+scheduler:
+  type: "MultiStepLR"
+  milestones: [50, 80]
+  gamma: 0.5
+
+# Loss function parameters
+losses:
+  pixel_loss: "l1"              # Standard reconstruction loss on outputs
+
+# Student model parameters
+student:
+  name: "edsr_small"
+  num_blocks: 6
+  num_channels: 32
+  scale: 4
+
+# Teacher model parameters (disabled for baseline)
+teacher:
+  enable: false
+
+# Validation metrics
+metrics:
+  - "psnr"
+  - "ssim"
+
+notes: >
+  This is the baseline run to establish student performance bounds without distillation.
+  Serves as the control group in our ablation study.

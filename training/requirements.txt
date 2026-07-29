@@ -1,0 +1,36 @@
+# Deep Learning
+torch
+torchvision
+torchaudio
+
+# Image Processing
+opencv-python
+Pillow
+
+# Numerical Computing
+numpy
+scipy
+
+# Visualization
+matplotlib
+
+# Progress Bar
+tqdm
+
+# Configuration
+PyYAML
+
+# Environment Variables
+python-dotenv
+
+# Evaluation Metrics
+scikit-image
+piq==0.8.0
+
+
+# Data Handling
+pandas
+
+# Jupyter Notebook
+jupyter
+ipykernel

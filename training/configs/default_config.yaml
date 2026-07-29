@@ -1,0 +1,67 @@
+# Top-level experiment identifier and folder parameters
+experiment_name: "edsr_distillation_default"
+output_dir: "outputs"
+
+# Target model specifications
+model:
+  type: "student"               # Options: teacher, student
+  name: "edsr_small"            # Options: edsr_baseline, edsr_small, rfdn, imdn
+  num_blocks: 3
+  num_rfdb_blocks: 3
+  num_channels: 48              # Changed from 32 to 48 to match target FeatureExtractor output channels
+  scale: 4                      # Options: 2, 4
+  in_channels: 3
+  kernel_size: 3
+  padding: 1
+  stride: 1
+  bias: true
+  activation: "leaky_relu"
+  negative_slope: 0.05
+  distilled_channels: 24
+  initial_residual_scale: 1.0
+
+# Input datasets paths and data loading setup
+dataset:
+  name: "DIV2K"                 # Options: DIV2K, Set5, Set14
+  train_hr_path: "datasets/DIV2K/DIV2K_train_HR"
+  train_lr_path: null           # Set path to load pre-degraded LR images, or null for dynamic downsampling
+  val_datasets:
+    Set5: "datasets/Set5"
+    Set14: "datasets/Set14"
+  patch_size: 192               # Crop patch height and width for high-resolution images
+  batch_size: 16
+  num_workers: 4
+
+# Degradation parameters for dynamic LR generation
+degradation:
+  blur_kernel: 21
+  blur_sigma: 1.2
+  noise_std: 0.0
+  jpeg_quality: 100
+
+# Knowledge distillation coefficients
+distillation:
+  enable: true
+  alpha_pixel: 1.0              # Output reconstruction distillation loss weight
+  beta_feature: 0.1             # Intermediate layer feature alignment weight
+  distill_loss_type: "charbonnier" # Options: l1, charbonnier
+
+# Training parameters and learning rate schedule
+training:
+  epochs: 300
+  lr: 0.0001
+  lr_milestones:
+    - 150
+    - 250
+  lr_gamma: 0.5
+  optimizer: "Adam"
+  weight_decay: 0.0
+  seed: 42
+
+# Validation loops configurations
+evaluation:
+  metrics:
+    - "psnr"
+    - "ssim"
+  save_sample_interval: 10      # Frequency (epochs) to save high resolution visualization samples
+  evaluate_only: false          # Skip training loops if true

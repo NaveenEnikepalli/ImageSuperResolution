@@ -1,0 +1,39 @@
+experiment_name: edsr_distillation_default
+output_dir: outputs
+model:
+  type: student
+  name: edsr_small
+  num_blocks: 6
+  num_channels: 32
+  scale: 4
+dataset:
+  name: DIV2K
+  train_hr_path: datasets/DIV2K/DIV2K_train_HR
+  train_lr_path: null
+  val_datasets:
+    Set5: datasets/Set5
+    Set14: datasets/Set14
+  patch_size: 192
+  batch_size: 16
+  num_workers: 4
+distillation:
+  enable: true
+  alpha_pixel: 1.0
+  beta_feature: 0.1
+  distill_loss_type: charbonnier
+training:
+  epochs: 300
+  lr: 0.0001
+  lr_milestones:
+  - 150
+  - 250
+  lr_gamma: 0.5
+  optimizer: Adam
+  weight_decay: 0.0
+  seed: 42
+evaluation:
+  metrics:
+  - psnr
+  - ssim
+  save_sample_interval: 10
+  evaluate_only: false

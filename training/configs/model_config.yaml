@@ -1,0 +1,16 @@
+# Pre-defined model structural templates for quick loading
+
+teacher:
+  type: "teacher"
+  name: "edsr_baseline"
+  num_blocks: 16
+  num_channels: 64
+  scale: 4
+
+student:
+  type: "student"
+  name: "edsr_small"
+  num_blocks: 3
+  num_rfdb_blocks: 3
+  num_channels: 48
+  scale: 4

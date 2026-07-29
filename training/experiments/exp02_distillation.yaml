@@ -1,0 +1,60 @@
+# Phase 4A Experiment Configuration Template
+# Distillation Training
+
+experiment_name: "exp02_distillation_student"
+description: "Train lightweight student model using pixel and feature knowledge distillation from SwinIR teacher."
+
+random_seed: 42
+checkpoint_directory: "outputs/runs/exp02_distillation_student/checkpoints"
+
+# Input dataset paths and settings
+dataset:
+  name: "DIV2K"
+  train_hr_path: "datasets/DIV2K/DIV2K_train_HR"
+  patch_size: 128
+  batch_size: 16
+  num_workers: 4
+
+# Optimization configurations
+epochs: 150
+learning_rate: 0.0002
+optimizer:
+  type: "Adam"
+  weight_decay: 0.0
+scheduler:
+  type: "CosineAnnealingLR"
+  T_max: 150
+  eta_min: 1e-6
+
+# Loss function parameters (with distillation coefficients)
+losses:
+  pixel_loss: "l1"
+  distillation:
+    enable: true
+    alpha_pixel: 1.0            # Pixel-level distillation loss weight
+    beta_feature: 0.1           # Intermediate layer feature alignment loss weight
+    distill_loss_type: "charbonnier"
+
+# Student model parameters
+student:
+  name: "edsr_small"
+  num_blocks: 6
+  num_channels: 32
+  scale: 4
+
+# Teacher model parameters
+teacher:
+  enable: true
+  name: "swinir_baseline"
+  checkpoint_path: "checkpoints/teacher/swinir_x4.pth"
+  scale: 4
+
+# Validation metrics
+metrics:
+  - "psnr"
+  - "ssim"
+  - "lpips"                     # Optional perceptual validation check
+
+notes: >
+  Primary distillation run transfering knowledge from heavy SwinIR wrapper teacher
+  to our lightweight EDSR-small student model.

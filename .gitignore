@@ -28,3 +28,9 @@ backend/outputs/
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Virtual Environments
+venv/
+.venv/
+**/venv/
+**/.venv/

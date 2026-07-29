@@ -1,0 +1,25 @@
+# FastAPI Framework
+fastapi
+uvicorn[standard]
+
+# File Upload Support
+python-multipart
+
+# Environment Variables
+python-dotenv
+
+# Image Processing
+opencv-python-headless
+Pillow
+
+# Numerical Computing
+numpy
+
+# Data Validation
+pydantic
+
+# Logging
+loguru
+
+# HTTP Requests
+requests

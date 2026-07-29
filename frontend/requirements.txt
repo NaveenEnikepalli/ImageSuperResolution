@@ -1,0 +1,11 @@
+# Frontend
+streamlit
+
+# Backend Communication
+requests
+
+# Image Handling
+Pillow
+
+# Numerical Computing
+numpy
