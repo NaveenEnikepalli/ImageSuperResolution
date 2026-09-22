@@ -37,15 +37,16 @@ losses:
 
 # Student model parameters
 student:
-  name: "edsr_small"
-  num_blocks: 6
-  num_channels: 32
+  name: "student_rfdb"
+  num_blocks: 3
+  num_channels: 48
+  distilled_channels: 24
   scale: 4
 
 # Teacher model parameters
 teacher:
   enable: true
-  name: "swinir_baseline"
+  name: "swinir_x4"
   checkpoint_path: "checkpoints/teacher/swinir_x4.pth"
   scale: 4
 
@@ -56,5 +57,5 @@ metrics:
   - "lpips"                     # Optional perceptual validation check
 
 notes: >
-  Primary distillation run transfering knowledge from heavy SwinIR wrapper teacher
-  to our lightweight EDSR-small student model.
+  Primary distillation run transfering knowledge from heavy SwinIR teacher
+  to our lightweight student_rfdb student model.

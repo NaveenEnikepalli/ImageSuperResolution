@@ -56,11 +56,11 @@ def main() -> None:
     train_loader = create_train_loader(config)
 
     # 6. Instantiate Models
-    m_cfg = config.model
+    m_cfg = getattr(config, "student", None) or getattr(config, "model", None)
     logger.info("Instantiating StudentModel architecture...")
     student = StudentModel(
         in_channels=getattr(m_cfg, "in_channels", 3),
-        out_channels=3,
+        out_channels=getattr(m_cfg, "out_channels", 3),
         num_features=getattr(m_cfg, "num_channels", 48),
         distilled_channels=getattr(m_cfg, "distilled_channels", 24),
         num_blocks=getattr(m_cfg, "num_blocks", 3),
@@ -69,16 +69,34 @@ def main() -> None:
     )
     student.to(device)
 
+    t_cfg = getattr(config, "teacher", None)
+    t_scale = getattr(t_cfg, "scale", getattr(m_cfg, "scale", 4)) if t_cfg else getattr(m_cfg, "scale", 4)
+    t_in_channels = getattr(t_cfg, "in_channels", getattr(m_cfg, "in_channels", 3)) if t_cfg else getattr(m_cfg, "in_channels", 3)
+
     logger.info("Instantiating SwinIRWrapper teacher model...")
     teacher = SwinIRWrapper(
-        scale=getattr(m_cfg, "scale", 4),
-        in_channels=getattr(m_cfg, "in_channels", 3),
+        scale=t_scale,
+        in_channels=t_in_channels,
     )
     teacher.to(device)
 
+    # Resolve teacher checkpoint path from config.teacher or fallback to config.model
+    checkpoint_path = None
+    if t_cfg is not None:
+        if isinstance(t_cfg, dict):
+            checkpoint_path = t_cfg.get("checkpoint_path")
+        else:
+            checkpoint_path = getattr(t_cfg, "checkpoint_path", None)
+
+    if not checkpoint_path and m_cfg is not None:
+        if isinstance(m_cfg, dict):
+            checkpoint_path = m_cfg.get("checkpoint_path")
+        else:
+            checkpoint_path = getattr(m_cfg, "checkpoint_path", None)
+
     # Load teacher checkpoint weights if configured
-    checkpoint_path = getattr(m_cfg, "checkpoint_path", None)
     if checkpoint_path:
+        logger.info(f"Loading pretrained teacher checkpoint: {checkpoint_path}")
         teacher.load_checkpoint(checkpoint_path)
 
     # 7. Instantiate Loss Framework
@@ -104,25 +122,52 @@ def main() -> None:
         weight_decay=weight_decay
     )
 
-    # 9. Create Scheduler (CosineAnnealingLR, configuration-driven)
-    epochs = int(getattr(train_cfg, "epochs", 300))
-    sched_cfg = getattr(train_cfg, "scheduler", None)
-    t_max = epochs
-    eta_min = 1e-6
+    # 9. Create Scheduler (Configuration-driven dispatch)
+    epochs = int(getattr(train_cfg, "epochs", getattr(config, "epochs", 300)))
+    sched_cfg = getattr(train_cfg, "scheduler", getattr(config, "scheduler", None))
+    sched_type = "CosineAnnealingLR"
 
     if isinstance(sched_cfg, dict):
-        t_max = int(sched_cfg.get("T_max", t_max))
-        eta_min = float(sched_cfg.get("eta_min", eta_min))
+        sched_type = sched_cfg.get("type", sched_type)
+    elif sched_cfg is not None and isinstance(sched_cfg, str):
+        sched_type = sched_cfg
     elif sched_cfg is not None:
-        t_max = int(getattr(sched_cfg, "T_max", t_max))
-        eta_min = float(getattr(sched_cfg, "eta_min", eta_min))
+        sched_type = getattr(sched_cfg, "type", sched_type)
 
-    logger.info(f"Creating scheduler: CosineAnnealingLR (T_max={t_max}, eta_min={eta_min})")
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer=optimizer,
-        T_max=t_max,
-        eta_min=eta_min
-    )
+    cleaned_sched_type = str(sched_type).strip().lower()
+
+    if cleaned_sched_type in ["multisteplr", "multi_step_lr"]:
+        milestones = [150, 250]
+        gamma = 0.5
+        if isinstance(sched_cfg, dict):
+            milestones = sched_cfg.get("milestones", milestones)
+            gamma = float(sched_cfg.get("gamma", gamma))
+        elif sched_cfg is not None:
+            milestones = getattr(sched_cfg, "milestones", getattr(train_cfg, "lr_milestones", milestones))
+            gamma = float(getattr(sched_cfg, "gamma", getattr(train_cfg, "lr_gamma", gamma)))
+
+        logger.info(f"Creating scheduler: MultiStepLR (milestones={milestones}, gamma={gamma})")
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(
+            optimizer=optimizer,
+            milestones=list(milestones),
+            gamma=gamma
+        )
+    else:
+        t_max = epochs
+        eta_min = 1e-6
+        if isinstance(sched_cfg, dict):
+            t_max = int(sched_cfg.get("T_max", t_max))
+            eta_min = float(sched_cfg.get("eta_min", eta_min))
+        elif sched_cfg is not None:
+            t_max = int(getattr(sched_cfg, "T_max", t_max))
+            eta_min = float(getattr(sched_cfg, "eta_min", eta_min))
+
+        logger.info(f"Creating scheduler: CosineAnnealingLR (T_max={t_max}, eta_min={eta_min})")
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer=optimizer,
+            T_max=t_max,
+            eta_min=eta_min
+        )
 
     # 10. Construct Trainer via Dependency Injection
     logger.info("Constructing Trainer via dependency injection...")

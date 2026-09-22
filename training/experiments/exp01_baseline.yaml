@@ -32,9 +32,10 @@ losses:
 
 # Student model parameters
 student:
-  name: "edsr_small"
-  num_blocks: 6
-  num_channels: 32
+  name: "student_rfdb"
+  num_blocks: 3
+  num_channels: 48
+  distilled_channels: 24
   scale: 4
 
 # Teacher model parameters (disabled for baseline)

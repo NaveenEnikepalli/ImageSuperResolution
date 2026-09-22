@@ -32,9 +32,10 @@ losses:
 
 # Student model parameters (Capacity scaled up)
 student:
-  name: "edsr_medium"
-  num_blocks: 8                 # Increased from 6
-  num_channels: 48              # Increased from 32
+  name: "student_rfdb_scaled"
+  num_blocks: 6                 # Increased from 3
+  num_channels: 64              # Increased from 48
+  distilled_channels: 32
   scale: 4
 
 # Teacher model parameters (disabled for baseline comparison)
@@ -47,5 +48,5 @@ metrics:
   - "ssim"
 
 notes: >
-  Ablation test evaluating whether adding capacity (8 blocks / 48 channels) to student
-  without distillation matches or exceeds a 6 block / 32 channel distilled student.
+  Ablation test evaluating whether adding capacity (6 blocks / 64 channels) to student
+  without distillation matches or exceeds a 3 block / 48 channel distilled student.

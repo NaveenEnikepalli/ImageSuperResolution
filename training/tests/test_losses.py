@@ -55,18 +55,14 @@ def test_teacher_wrapper_forward() -> None:
     assert output.grad_fn is None, "Teacher forward must execute in torch.no_grad()!"
 
 
-def test_teacher_wrapper_load_checkpoint_missing(caplog: pytest.LogCaptureFixture) -> None:
-    """Verify load_checkpoint handles non-existent paths gracefully without crashing."""
-    teacher = SwinIRWrapper(scale=2, in_channels=3)
+def test_teacher_wrapper_load_checkpoint_missing() -> None:
+    """Verify load_checkpoint raises FileNotFoundError if checkpoint path does not exist."""
+    teacher = SwinIRWrapper(scale=4, in_channels=3)
     
-    # Attempting to load from a non-existent path
-    teacher.load_checkpoint("non_existent_weights.pth")
+    with pytest.raises(FileNotFoundError, match="Teacher checkpoint file not found"):
+        teacher.load_checkpoint("non_existent_weights.pth")
     assert not teacher.is_loaded
-    
-    # Parameters must remain frozen and eval mode kept
-    for param in teacher.parameters():
-        assert not param.requires_grad
-    assert not teacher.training
+
 
 
 # =====================================================================

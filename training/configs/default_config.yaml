@@ -1,14 +1,15 @@
 # Top-level experiment identifier and folder parameters
-experiment_name: "edsr_distillation_default"
+experiment_name: "student_distillation_default"
 output_dir: "outputs"
 
 # Target model specifications
 model:
   type: "student"               # Options: teacher, student
-  name: "edsr_small"            # Options: edsr_baseline, edsr_small, rfdn, imdn
+  name: "student_rfdb"          # Options: student_rfdb, student_rfdb_scaled
   num_blocks: 3
   num_rfdb_blocks: 3
-  num_channels: 48              # Changed from 32 to 48 to match target FeatureExtractor output channels
+  num_channels: 48              # Target FeatureExtractor output channels
+  distilled_channels: 24
   scale: 4                      # Options: 2, 4
   in_channels: 3
   kernel_size: 3
@@ -17,8 +18,14 @@ model:
   bias: true
   activation: "leaky_relu"
   negative_slope: 0.05
-  distilled_channels: 24
   initial_residual_scale: 1.0
+
+# Pretrained Teacher Model specifications
+teacher:
+  enable: true
+  name: "swinir_x4"
+  checkpoint_path: "checkpoints/teacher/swinir_x4.pth"
+  scale: 4
 
 # Input datasets paths and data loading setup
 dataset:

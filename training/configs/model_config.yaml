@@ -2,15 +2,15 @@
 
 teacher:
   type: "teacher"
-  name: "edsr_baseline"
-  num_blocks: 16
-  num_channels: 64
+  name: "swinir_x4"
+  checkpoint_path: "checkpoints/teacher/swinir_x4.pth"
   scale: 4
 
 student:
   type: "student"
-  name: "edsr_small"
+  name: "student_rfdb"
   num_blocks: 3
   num_rfdb_blocks: 3
   num_channels: 48
+  distilled_channels: 24
   scale: 4
