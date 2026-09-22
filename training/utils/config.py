@@ -69,6 +69,30 @@ class ModelConfig:
 
 
 @dataclass
+class TeacherConfig:
+    """Pretrained Teacher Model configuration properties."""
+
+    enable: bool = True
+    name: str = "swinir_x4"
+    checkpoint_path: str = "checkpoints/teacher/swinir_x4.pth"
+    scale: int = 4
+    in_channels: int = 3
+
+    def validate(self) -> None:
+        if self.scale not in SUPPORTED_SCALES:
+            raise ValueError(
+                f"Teacher scale {self.scale} not supported. "
+                f"Must be in {SUPPORTED_SCALES}"
+            )
+
+        if self.in_channels <= 0:
+            raise ValueError(
+                f"Teacher in_channels must be positive, "
+                f"got {self.in_channels}"
+            )
+
+
+@dataclass
 class DatasetConfig:
     """Dataset filepaths, processing, and pipeline configs."""
     name: str = "DIV2K"
@@ -174,6 +198,7 @@ class ExperimentConfig:
     experiment_name: str = DEFAULT_EXPERIMENT_NAME
     output_dir: str = "outputs"
     model: ModelConfig = field(default_factory=ModelConfig)
+    teacher: TeacherConfig = field(default_factory=TeacherConfig)
     dataset: DatasetConfig = field(default_factory=DatasetConfig)
     degradation: DegradationConfig = field(default_factory=DegradationConfig)
     distillation: DistillationConfig = field(default_factory=DistillationConfig)
@@ -185,6 +210,7 @@ class ExperimentConfig:
         if not self.experiment_name.strip():
             raise ValueError("experiment_name cannot be empty or whitespace.")
         self.model.validate()
+        self.teacher.validate()
         self.dataset.validate()
         self.degradation.validate()
         self.distillation.validate()

@@ -24,8 +24,9 @@ model:
 teacher:
   enable: true
   name: "swinir_x4"
-  checkpoint_path: "checkpoints/teacher/swinir_x4.pth"
+  checkpoint_path: "/content/drive/MyDrive/ImageSuperResolution/checkpoints/teacher/swinir_x4.pth"
   scale: 4
+  in_channels: 3
 
 # Input datasets paths and Colab data loading setup
 dataset:
