@@ -1,0 +1,74 @@
+# Colab runtime configuration for final distillation training run
+experiment_name: "student_distillation_default"
+output_dir: "/content/drive/MyDrive/ImageSuperResolution/training_outputs"
+
+# Target model specifications
+model:
+  type: "student"
+  name: "student_rfdb"
+  num_blocks: 3
+  num_rfdb_blocks: 3
+  num_channels: 48
+  distilled_channels: 24
+  scale: 4
+  in_channels: 3
+  kernel_size: 3
+  padding: 1
+  stride: 1
+  bias: true
+  activation: "leaky_relu"
+  negative_slope: 0.05
+  initial_residual_scale: 1.0
+
+# Pretrained Teacher Model specifications
+teacher:
+  enable: true
+  name: "swinir_x4"
+  checkpoint_path: "checkpoints/teacher/swinir_x4.pth"
+  scale: 4
+
+# Input datasets paths and Colab data loading setup
+dataset:
+  name: "DIV2K"
+  train_hr_path: "/content/drive/MyDrive/ImageSuperResolution/datasets/DIV2K/DIV2K_train_HR"
+  train_lr_path: null
+  val_datasets:
+    Set5: "/content/drive/MyDrive/ImageSuperResolution/datasets/Set5"
+    Set14: "/content/drive/MyDrive/ImageSuperResolution/datasets/Set14"
+  patch_size: 192
+  batch_size: 16
+  num_workers: 2
+
+# Degradation parameters for dynamic LR generation
+degradation:
+  blur_kernel: 21
+  blur_sigma: 1.2
+  noise_std: 0.0
+  jpeg_quality: 100
+
+# Knowledge distillation coefficients
+distillation:
+  enable: true
+  alpha_pixel: 1.0
+  beta_feature: 0.1
+  distill_loss_type: "l1"
+
+# Training parameters and learning rate schedule
+training:
+  epochs: 300
+  lr: 0.0001
+  lr_milestones:
+    - 150
+    - 250
+  lr_gamma: 0.5
+  optimizer: "Adam"
+  weight_decay: 0.0
+  seed: 42
+
+# Validation loops configurations
+evaluation:
+  metrics:
+    - "psnr"
+    - "ssim"
+  save_sample_interval: 10
+  evaluate_only: false
