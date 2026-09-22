@@ -5,6 +5,7 @@ Purpose: Coordinates training epochs, model execution, backpropagation, and stat
 """
 
 import logging
+from pathlib import Path
 from typing import Dict, Any, List, Optional
 import torch
 import torch.nn as nn
@@ -100,9 +101,29 @@ class Trainer:
 
         logger.info(f"Starting distillation training for {epochs} epochs on device: {self.device}")
 
-        history: List[Dict[str, Any]] = []
+        # Check for existing checkpoint to resume training
+        latest_checkpoint = None
+        if self.checkpoint_manager is not None and getattr(self.checkpoint_manager, "checkpoint_dir", None) is not None:
+            try:
+                candidate = Path(self.checkpoint_manager.checkpoint_dir) / "latest.pth"
+                if candidate.exists():
+                    latest_checkpoint = candidate
+            except Exception as e:
+                logger.warning(f"Error checking checkpoint path: {e}")
 
-        for epoch in range(1, epochs + 1):
+        if latest_checkpoint is not None:
+            logger.info(f"Resuming training from checkpoint: {latest_checkpoint}")
+            checkpoint_data = self.checkpoint_manager.load(latest_checkpoint)
+            history: List[Dict[str, Any]] = checkpoint_data.get("training_history", [])
+            restored_epoch = checkpoint_data.get("epoch", 0)
+            start_epoch = restored_epoch + 1
+            logger.info(f"Resuming from epoch {start_epoch}")
+        else:
+            logger.info("No checkpoint found. Starting training from epoch 1.")
+            history = []
+            start_epoch = 1
+
+        for epoch in range(start_epoch, epochs + 1):
             epoch_stats = self._train_epoch()
 
             # Execute scheduler step at the end of each epoch
