@@ -33,8 +33,8 @@ dataset:
   train_hr_path: "/content/drive/MyDrive/ImageSuperResolution/datasets/DIV2K/DIV2K_train_HR"
   train_lr_path: null
   val_datasets:
-    Set5: "/content/drive/MyDrive/ImageSuperResolution/datasets/Set5"
-    Set14: "/content/drive/MyDrive/ImageSuperResolution/datasets/Set14"
+    Set5: "/content/drive/MyDrive/ImageSuperResolution/datasets/Benchmarks/Set5/Set5/GTmod12"
+    Set14: "/content/drive/MyDrive/ImageSuperResolution/datasets/Benchmarks/Set14/Set14/GTmod12"
   patch_size: 192
   batch_size: 16
   num_workers: 2
