@@ -51,7 +51,7 @@ distillation:
   enable: true
   alpha_pixel: 1.0              # Output reconstruction distillation loss weight
   beta_feature: 0.1             # Intermediate layer feature alignment weight
-  distill_loss_type: "charbonnier" # Options: l1, charbonnier
+  distill_loss_type: "l1"          # Options: l1, charbonnier
 
 # Training parameters and learning rate schedule
 training:
