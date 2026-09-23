@@ -143,7 +143,7 @@ def main() -> None:
     )
 
     # 10. Create Scheduler (Configuration-driven dispatch)
-    epochs = int(getattr(train_cfg, "epochs", getattr(config, "epochs", 300)))
+    epochs = int(getattr(train_cfg, "epochs", getattr(config, "epochs", 100)))
     sched_cfg = getattr(train_cfg, "scheduler", getattr(config, "scheduler", None))
 
     # Determine scheduler strategy based on presence of lr_milestones / milestones
@@ -152,7 +152,7 @@ def main() -> None:
     ) or (sched_cfg is not None and hasattr(sched_cfg, "milestones"))
 
     if has_milestones:
-        milestones = getattr(train_cfg, "lr_milestones", [150, 250])
+        milestones = getattr(train_cfg, "lr_milestones", [50, 80])
         gamma = float(getattr(train_cfg, "lr_gamma", 0.5))
         if isinstance(sched_cfg, dict):
             milestones = sched_cfg.get("milestones", milestones)

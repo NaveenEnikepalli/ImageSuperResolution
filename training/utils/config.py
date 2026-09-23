@@ -139,9 +139,9 @@ class DistillationConfig:
 @dataclass
 class TrainingConfig:
     """Optimization hyperparameters and reproducibility configs."""
-    epochs: int = 300
+    epochs: int = 100
     lr: float = 1e-4
-    lr_milestones: List[int] = field(default_factory=lambda: [150, 250])
+    lr_milestones: List[int] = field(default_factory=lambda: [50, 80])
     lr_gamma: float = 0.5
     optimizer: str = "Adam"
     weight_decay: float = 0.0

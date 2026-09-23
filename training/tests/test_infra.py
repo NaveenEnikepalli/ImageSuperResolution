@@ -117,7 +117,7 @@ def test_config_parsing_and_saving() -> None:
 
         # Validate defaults were retained
         assert config.model.num_channels == 32
-        assert config.training.epochs == 300  # Default value
+        assert config.training.epochs == 100  # Default value
         
         # 2. Save config backup
         backup_file = Path(tmpdir) / "config_backup.yaml"

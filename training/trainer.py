@@ -97,7 +97,7 @@ class Trainer:
         """
         # Resolve epochs from config
         train_cfg = getattr(self.config, "training", None) or self.config
-        epochs = int(getattr(train_cfg, "epochs", 300))
+        epochs = int(getattr(train_cfg, "epochs", 100))
 
         logger.info(f"Starting distillation training for {epochs} epochs on device: {self.device}")
 
