@@ -33,8 +33,11 @@ def get_cached_engine(scale: int):
     return _ENGINE_CACHE[scale]
 
 
+from app.services.enhancement_service import enhance_image
+
+
 def process_image_enhancement(image_bytes: bytes, scale: int) -> bytes:
-    """Process image bytes and return enhanced image bytes.
+    """Process image bytes and return enhanced PNG image bytes via enhancement service.
 
     Args:
         image_bytes (bytes): Raw uploaded input image bytes.
@@ -43,31 +46,6 @@ def process_image_enhancement(image_bytes: bytes, scale: int) -> bytes:
     Returns:
         bytes: Enhanced PNG image bytes.
     """
-    if scale not in (2, 4, 8):
-        raise ValueError(f"Invalid scale factor: {scale}. Supported values are 2, 4, and 8.")
+    result = enhance_image(file_bytes=image_bytes, scale=scale)
+    return result["output_bytes"]
 
-    try:
-        input_pil = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-    except Exception as e:
-        raise ValueError(f"Failed to decode image file: {e}")
-
-    logger.info(
-        f"Processing backend image enhancement: input size {input_pil.size}, target scale x{scale}"
-    )
-
-    # Get cached inference engine
-    engine = get_cached_engine(scale=scale)
-
-    # Run inference pipeline
-    output_pil = engine.enhance(input_pil)
-
-    # Encode output image to PNG byte stream
-    buffer = io.BytesIO()
-    output_pil.save(buffer, format="PNG")
-    output_bytes = buffer.getvalue()
-
-    logger.info(
-        f"Image enhancement complete: output size {output_pil.size}, encoded payload {len(output_bytes)} bytes"
-    )
-
-    return output_bytes

@@ -53,7 +53,21 @@ class SwinIRInference:
             self.device = torch.device(device)
 
         if checkpoint_path is None:
-            checkpoint_path = Path("checkpoints/swinir/swinir_x8.pth")
+            root_dir = Path(__file__).resolve().parents[1]
+            candidates = [
+                root_dir / "checkpoints" / "swinir" / "swinir_x8.pth",
+                Path("checkpoints/swinir/swinir_x8.pth"),
+            ]
+            checkpoint_path = next((p for p in candidates if p.exists()), candidates[0])
+        else:
+            path_obj = Path(checkpoint_path)
+            if not path_obj.exists():
+                root_dir = Path(__file__).resolve().parents[1]
+                candidate_in_root = root_dir / path_obj
+                if candidate_in_root.exists():
+                    path_obj = candidate_in_root
+            checkpoint_path = path_obj
+
         self.checkpoint_path = Path(checkpoint_path)
         self.download_if_missing = download_if_missing
 

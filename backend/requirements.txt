@@ -2,24 +2,25 @@
 fastapi
 uvicorn[standard]
 
-# File Upload Support
+# File Upload & Environment
 python-multipart
-
-# Environment Variables
 python-dotenv
 
-# Image Processing
+# Image Processing & Numerical Computing
 opencv-python-headless
 Pillow
-
-# Numerical Computing
 numpy
 
-# Data Validation
-pydantic
+# Deep Learning Framework
+torch
+torchvision
 
-# Logging
+# Data Validation & Logging
+pydantic
 loguru
 
-# HTTP Requests
+# Utilities & Metrics
 requests
+pyyaml
+piq
+httpx

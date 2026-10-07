@@ -12,18 +12,24 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-# Add repository root directory to sys.path
-ROOT_DIR = Path(__file__).resolve().parents[2]
-if str(ROOT_DIR) not in sys.path:
-    sys.path.insert(0, str(ROOT_DIR))
+# Add repository root and backend directory to sys.path
+BACKEND_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = BACKEND_DIR.parent
 
-from backend.app.api.routes import router as api_router
+for p in [str(ROOT_DIR), str(BACKEND_DIR)]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
+
+try:
+    from backend.app.api.routes import router as api_router
+except ModuleNotFoundError:
+    from app.api.routes import router as api_router
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
-logger = logging.getLogger("BackendMain")
+logger = logging.getLogger("BackendServerMain")
 
 app = FastAPI(
     title="Image Super-Resolution API",
@@ -40,6 +46,14 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=[
+        "X-Inference-Time",
+        "X-Model-Used",
+        "X-Input-Resolution",
+        "X-Output-Resolution",
+        "X-Scale-Factor",
+        "Content-Disposition",
+    ],
 )
 
 # Include API endpoints
@@ -55,11 +69,11 @@ async def root():
             "version": "2.0.0",
             "status": "running",
             "docs": "/docs",
-            "supported_scales": ["2x", "4x", "8x"],
+            "supported_scales": [2, 4, 8],
         }
     )
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
