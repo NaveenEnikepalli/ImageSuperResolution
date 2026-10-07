@@ -42,7 +42,7 @@ export default function Home({ onStartEnhancing }) {
           lineHeight: 1.2,
           letterSpacing: '-1px',
         }} className="hero-gradient-text">
-          AI Image Super Resolution
+          PixelLift
         </h1>
 
         <p style={{
@@ -52,7 +52,7 @@ export default function Home({ onStartEnhancing }) {
           color: '#94a3b8',
           lineHeight: 1.6,
         }}>
-          Lightweight Image Enhancement using Knowledge Distillation. Reconstruct fine textures and clarity from low-resolution images with real-time neural network architectures.
+          Lightweight AI-Based Image Enhancement using Knowledge Distillation. Reconstruct fine textures and clarity from low-resolution images with real-time neural network architectures.
         </p>
 
         {/* Visual Pipeline Banner */}

@@ -1,6 +1,6 @@
-# AI Image Super-Resolution Frontend (React + Vite)
+# PixelLift Frontend (React + Vite)
 
-A modern, high-performance React + Vite user interface for AI Image Super-Resolution built with Knowledge Distillation and Shifted-Window Vision Transformers.
+A modern, high-performance React + Vite user interface for PixelLift: Lightweight AI-Based Image Enhancement using Knowledge Distillation.
 
 ---
 

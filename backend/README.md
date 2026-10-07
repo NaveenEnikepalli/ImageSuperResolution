@@ -1,10 +1,10 @@
-# Image Super-Resolution — FastAPI Backend Service
+# PixelLift — FastAPI Backend Service
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.140%2B-009688.svg)](https://fastapi.tiangolo.com/)
 [![Uvicorn](https://img.shields.io/badge/Uvicorn-0.30%2B-black.svg)](https://www.uvicorn.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-red.svg)](https://pytorch.org/)
 
-FastAPI REST API backend service for the Image Super-Resolution project. It handles file validation, image preprocessing, persistent PyTorch model caching, automatic scale-based model routing, and super-resolution inference execution.
+FastAPI REST API backend service for the PixelLift project: Lightweight AI-Based Image Enhancement using Knowledge Distillation. It handles file validation, image preprocessing, persistent PyTorch model caching, automatic scale-based model routing, and super-resolution inference execution.
 
 ---
 

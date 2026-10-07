@@ -31,7 +31,7 @@ async def health_check():
         status_code=status.HTTP_200_OK,
         content={
             "status": "ok",
-            "service": "ImageSuperResolution API",
+            "service": "PixelLift API",
             "supported_scales": AVAILABLE_SCALES,
         },
     )

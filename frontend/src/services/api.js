@@ -92,8 +92,8 @@ export async function enhanceImageViaApi(file, scale) {
       try {
         const errorJson = await response.json();
         if (errorJson.detail) {
-          errorMessage = typeof errorJson.detail === 'string' 
-            ? errorJson.detail 
+          errorMessage = typeof errorJson.detail === 'string'
+            ? errorJson.detail
             : JSON.stringify(errorJson.detail);
         }
       } catch {

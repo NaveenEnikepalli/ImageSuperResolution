@@ -1,7 +1,7 @@
 """Backend Configuration Module.
 
 Author: Antigravity
-Purpose: Centralized backend configuration settings for Image Super-Resolution API.
+Purpose: Centralized backend configuration settings for PixelLift API.
 """
 
 from pathlib import Path

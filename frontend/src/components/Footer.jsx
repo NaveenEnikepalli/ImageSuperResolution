@@ -13,7 +13,7 @@ export default function Footer() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginBottom: '0.35rem' }}>
         <Zap size={16} color="#2563eb" />
         <span style={{ fontWeight: 700, color: '#0f172a' }}>
-          AI Image Super-Resolution Engineering Suite
+          PixelLift: Lightweight AI-Based Image Enhancement using Knowledge Distillation
         </span>
       </div>
       <p style={{ margin: '0 0 0.5rem 0', color: '#64748b', fontSize: '0.82rem' }}>

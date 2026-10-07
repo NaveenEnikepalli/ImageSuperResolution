@@ -1,4 +1,4 @@
-# Lightweight Image Super-Resolution Full-Stack Project
+# PixelLift: Lightweight AI-Based Image Enhancement using Knowledge Distillation
 ## React + Vite Frontend + FastAPI Backend + PyTorch Models
 
 [![React](https://img.shields.io/badge/React-19.0%2B-61DAFB.svg)](https://react.dev/)
@@ -7,7 +7,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-red.svg)](https://pytorch.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.140%2B-009688.svg)](https://fastapi.tiangolo.com/)
 
-Full-stack application for **"Lightweight Image Super-Resolution using Knowledge Distillation for Resource-Constrained Devices"**.
+Full-stack application for **PixelLift: Lightweight AI-Based Image Enhancement using Knowledge Distillation**.
 
 ---
 

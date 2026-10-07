@@ -63,10 +63,10 @@ export default function Navbar({ activePage, setActivePage }) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-              AI Image Super Resolution
+              PixelLift
             </h1>
             <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b', fontWeight: 500 }}>
-              Lightweight Deep Learning Enhancement via Knowledge Distillation
+              AI-Powered Image Enhancement using Knowledge Distillation
             </p>
           </div>
         </div>

@@ -32,8 +32,8 @@ logging.basicConfig(
 logger = logging.getLogger("BackendServerMain")
 
 app = FastAPI(
-    title="Image Super-Resolution API",
-    description="High-Performance Deep Learning Image Super-Resolution (2x, 4x, 8x)",
+    title="PixelLift API",
+    description="Backend API for PixelLift lightweight AI-based image enhancement using knowledge distillation.",
     version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -65,7 +65,7 @@ async def root():
     """Root endpoint returning API metadata."""
     return JSONResponse(
         content={
-            "name": "Image Super-Resolution API",
+            "name": "PixelLift API",
             "version": "2.0.0",
             "status": "running",
             "docs": "/docs",

@@ -51,6 +51,12 @@ def enhance_image(
     in_w, in_h = input_pil.size
     input_info = get_image_info(input_pil, len(file_bytes))
 
+    # Safety bound check for extremely large images
+    max_input_dim = 3072
+    max_output_dim = 8192
+    if in_w > max_input_dim or in_h > max_input_dim or (in_w * scale) > max_output_dim or (in_h * scale) > max_output_dim:
+        raise ValueError("Image is too large for the current enhancement configuration. Please try a smaller image.")
+
     logger.info(
         f"Processing image enhancement: '{filename or 'input_image'}' ({in_w}x{in_h}) at scale x{scale}"
     )
