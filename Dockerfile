@@ -24,7 +24,6 @@ COPY backend /app/backend
 
 # Copy required inference engine and Student model architecture modules
 COPY inference /app/inference
-COPY training/__init__.py /app/training/__init__.py
 COPY training/models /app/training/models
 
 # Copy required Student checkpoints (x2 and x4)
