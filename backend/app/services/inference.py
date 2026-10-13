@@ -2,7 +2,7 @@
 
 Author: Antigravity
 Purpose: Bridge incoming HTTP image enhancement requests to the underlying
-super-resolution inference engines (Student x2, Student x4, SwinIR x8).
+super-resolution inference engines (Student x2, Student x4).
 """
 
 import io
@@ -11,6 +11,7 @@ from typing import Dict, Any, Union
 from PIL import Image
 
 from inference.model_selector import select_model
+from inference.student_inference import StudentInference
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +23,10 @@ def get_cached_engine(scale: int):
     """Retrieve or initialize cached inference engine for target scale.
 
     Args:
-        scale (int): Upscaling scale factor (2, 4, or 8).
+        scale (int): Upscaling scale factor (2 or 4).
 
     Returns:
-        Union[StudentInference, SwinIRInference]: Engine instance.
+        StudentInference: Engine instance.
     """
     if scale not in _ENGINE_CACHE:
         logger.info(f"Initializing and caching inference engine for scale x{scale}...")
@@ -41,7 +42,7 @@ def process_image_enhancement(image_bytes: bytes, scale: int) -> bytes:
 
     Args:
         image_bytes (bytes): Raw uploaded input image bytes.
-        scale (int): Desired output resolution scale (2, 4, or 8).
+        scale (int): Desired output resolution scale (2 or 4).
 
     Returns:
         bytes: Enhanced PNG image bytes.

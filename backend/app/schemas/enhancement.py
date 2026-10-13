@@ -13,7 +13,7 @@ class HealthResponse(BaseModel):
 
     status: str = Field(..., json_schema_extra={"example": "ok"})
     service: str = Field(..., json_schema_extra={"example": "ImageSuperResolution API"})
-    supported_scales: List[int] = Field(..., json_schema_extra={"example": [2, 4, 8]})
+    supported_scales: List[int] = Field(..., json_schema_extra={"example": [2, 4]})
 
 
 class ModelInfo(BaseModel):
@@ -34,5 +34,5 @@ class ModelInfo(BaseModel):
 class ModelsResponse(BaseModel):
     """Response schema listing available super-resolution models."""
 
-    supported_scales: List[int] = Field(..., json_schema_extra={"example": [2, 4, 8]})
+    supported_scales: List[int] = Field(..., json_schema_extra={"example": [2, 4]})
     models: Dict[int, ModelInfo]

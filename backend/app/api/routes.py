@@ -55,7 +55,7 @@ async def get_models_info():
 async def enhance_image_endpoint(
     image: UploadFile = File(None, description="Target low-resolution image file (PNG, JPG, JPEG, WEBP)"),
     file: UploadFile = File(None, description="Target low-resolution image file (alias)"),
-    scale: int = Form(4, description="Output resolution scale factor (choices: 2, 4, 8)"),
+    scale: int = Form(4, description="Output resolution scale factor (choices: 2, 4)"),
 ):
     """Super-resolution image enhancement endpoint."""
     upload_file = image or file
@@ -65,10 +65,10 @@ async def enhance_image_endpoint(
             detail="Missing image file payload. Please provide 'image' or 'file' form parameter.",
         )
 
-    if scale not in (2, 4, 8):
+    if scale not in (2, 4):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Unsupported scale factor x{scale}. Supported scales are 2, 4, and 8.",
+            detail=f"Unsupported scale factor x{scale}. Supported scales are 2 and 4.",
         )
 
     try:

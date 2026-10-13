@@ -43,8 +43,8 @@ def enhance_image(
     if not is_valid:
         raise ValueError(err_msg or "Invalid image file.")
 
-    if scale not in (2, 4, 8):
-        raise ValueError(f"Unsupported scale factor x{scale}. Supported scales are 2, 4, and 8.")
+    if scale not in (2, 4):
+        raise ValueError(f"Unsupported scale factor x{scale}. Supported scales are 2 and 4.")
 
     # Preprocess image
     input_pil = load_and_preprocess_image(file_bytes)

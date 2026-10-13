@@ -37,7 +37,7 @@ class TestModelRouting:
     """Tests for model selection and routing rules."""
 
     def test_supported_scales_constant(self):
-        assert set(SUPPORTED_SCALES) == {2, 4, 8}
+        assert set(SUPPORTED_SCALES) == {2, 4}
 
     @patch("inference.model_selector.StudentInference")
     def test_route_scale_2_to_student_x2(self, mock_student):
@@ -57,16 +57,12 @@ class TestModelRouting:
         mock_student.assert_called_once_with(scale=4, checkpoint_path=None, device=None)
         assert engine == mock_instance
 
-    @patch("inference.model_selector.SwinIRInference")
-    def test_route_scale_8_to_swinir_x8(self, mock_swinir):
-        mock_instance = MagicMock()
-        mock_swinir.return_value = mock_instance
+    def test_route_scale_8_excluded(self):
+        with pytest.raises(ValueError) as exc_info:
+            select_model(scale=8)
+        assert "Unsupported" in str(exc_info.value) or "x8" in str(exc_info.value)
 
-        engine = select_model(scale=8)
-        mock_swinir.assert_called_once_with(scale=8, checkpoint_path=None, device=None)
-        assert engine == mock_instance
-
-    @pytest.mark.parametrize("invalid_scale", [1, 3, 5, 6, 10, -2, 0])
+    @pytest.mark.parametrize("invalid_scale", [1, 3, 5, 6, 8, 10, -2, 0])
     def test_invalid_scale_raises_value_error(self, invalid_scale):
         with pytest.raises(ValueError) as exc_info:
             select_model(scale=invalid_scale)
@@ -140,7 +136,7 @@ class TestEnhancementServiceAndScaling:
     """Tests for complete enhancement pipeline execution and dimension scaling."""
 
     @patch("backend.app.services.enhancement_service.get_model_engine")
-    @pytest.mark.parametrize("scale", [2, 4, 8])
+    @pytest.mark.parametrize("scale", [2, 4])
     def test_output_resolution_scaling(self, mock_get_engine, scale):
         in_w, in_h = 20, 15
         img_bytes = create_dummy_image_bytes(in_w, in_h, format="PNG")

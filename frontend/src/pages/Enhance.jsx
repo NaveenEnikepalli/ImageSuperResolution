@@ -11,7 +11,6 @@ import { checkBackendHealth, enhanceImageViaApi } from '../services/api';
 const SCALE_MODELS = {
   2: 'Student RFDB',
   4: 'Student RFDB',
-  8: 'SwinIR-M Transformer',
 };
 
 export default function Enhance() {
@@ -101,7 +100,7 @@ export default function Enhance() {
           🔍 Enhance Your Image
         </h2>
         <p style={{ color: '#64748b', fontSize: '0.95rem', margin: 0 }}>
-          Upload a low-resolution image, select target scale factor (2×, 4×, or 8×), and reconstruct fine high-definition details using deep neural networks.
+          Upload a low-resolution image, select target scale factor (2× or 4×), and reconstruct fine high-definition details using deep neural networks.
         </p>
       </div>
 

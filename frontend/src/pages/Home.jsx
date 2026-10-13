@@ -174,38 +174,6 @@ export default function Home({ onStartEnhancing }) {
               Deep resolution synthesis model trained via feature map distillation to recover crisp edges and textures.
             </p>
           </div>
-
-          {/* 8x Card */}
-          <div className="card-container" style={{
-            padding: '1.75rem',
-            textAlign: 'center',
-            border: '2px solid #06b6d4',
-            background: 'linear-gradient(180deg, #ffffff 0%, #ecfeff 100%)',
-          }}>
-            <div style={{
-              background: '#0891b2',
-              color: '#ffffff',
-              width: '52px',
-              height: '52px',
-              borderRadius: '14px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 800,
-              fontSize: '1.35rem',
-              margin: '0 auto 1rem auto',
-              boxShadow: '0 6px 16px rgba(6, 182, 212, 0.3)',
-            }}>
-              8×
-            </div>
-            <h3 style={{ margin: '0 0 0.35rem 0', color: '#0f172a', fontWeight: 800 }}>SwinIR-M Transformer</h3>
-            <div style={{ color: '#0891b2', fontWeight: 700, fontSize: '0.88rem', marginBottom: '0.85rem' }}>
-              ~11.8M Parameters
-            </div>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b', lineHeight: 1.5 }}>
-              High-capacity Shifted-Window Vision Transformer baseline delivering high-definition synthesis at 8× magnification.
-            </p>
-          </div>
         </div>
       </section>
 

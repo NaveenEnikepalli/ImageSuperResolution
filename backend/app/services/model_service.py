@@ -25,21 +25,20 @@ def get_model_engine(
     Routing:
       scale == 2 -> StudentInference(scale=2) (Student x2)
       scale == 4 -> StudentInference(scale=4) (Student x4)
-      scale == 8 -> SwinIRInference(scale=8)  (SwinIR x8)
 
     Args:
-        scale (int): Requested scale factor (2, 4, or 8).
+        scale (int): Requested scale factor (2 or 4).
         device (Optional[Union[str, torch.device]]): Target compute device.
 
     Returns:
         Any: Cached inference engine instance.
 
     Raises:
-        ValueError: If scale is not supported (not 2, 4, or 8).
+        ValueError: If scale is not supported (not 2 or 4).
     """
-    if scale not in (2, 4, 8):
+    if scale not in (2, 4):
         raise ValueError(
-            f"Unsupported scale factor x{scale}. Supported scales are 2, 4, and 8."
+            f"Unsupported scale factor x{scale}. Supported scales are 2 and 4."
         )
 
     cache_key = scale

@@ -111,11 +111,10 @@ class TestModelSelector:
         assert isinstance(engine, StudentInference)
         assert engine.scale == 4
 
-    def test_select_scale_8(self):
-        """Verify scale=8 routes to SwinIRInference with scale=8."""
-        engine = select_model(8, device="cpu")
-        assert isinstance(engine, SwinIRInference)
-        assert engine.scale == 8
+    def test_select_scale_8_excluded(self):
+        """Verify scale=8 is excluded from production model selector and raises ValueError."""
+        with pytest.raises(ValueError, match="Unsupported super-resolution scale factor"):
+            select_model(8)
 
     def test_invalid_scale_raises_error(self):
         """Verify invalid scale values raise ValueError."""

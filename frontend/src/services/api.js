@@ -57,7 +57,7 @@ export async function getModelsInfo() {
  * Send image to FastAPI backend for AI super-resolution enhancement.
  *
  * @param {File} file - Low resolution image file object.
- * @param {number} scale - Desired scale factor (2, 4, or 8).
+ * @param {number} scale - Desired scale factor (2 or 4).
  * @returns {Promise<{
  *   success: boolean,
  *   blob: Blob,
@@ -107,7 +107,7 @@ export async function enhanceImageViaApi(file, scale) {
 
     const headers = response.headers;
     const inferenceTime = parseFloat(headers.get('X-Inference-Time') || '0.0');
-    const modelName = headers.get('X-Model-Used') || (scale === 8 ? 'SwinIR-M Transformer' : `Student RFDB (x${scale})`);
+    const modelName = headers.get('X-Model-Used') || `Student RFDB (x${scale})`;
     const inputResolution = headers.get('X-Input-Resolution') || 'N/A';
     const outputResolution = headers.get('X-Output-Resolution') || 'N/A';
     const scaleFactor = parseInt(headers.get('X-Scale-Factor') || String(scale), 10);

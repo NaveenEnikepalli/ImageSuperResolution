@@ -5,6 +5,7 @@ Purpose: High-level inference pipeline for Student Super-Resolution models (x2 a
 Handles device assignment, checkpoint loading, pre/post-processing, and clamping.
 """
 
+import gc
 import logging
 from pathlib import Path
 from typing import Union, Optional
@@ -110,6 +111,47 @@ class StudentInference:
 
         self.model.load_state_dict(cleaned_state_dict, strict=False)
 
+    def _forward_tiled(self, x: torch.Tensor, tile_size: int = 256, tile_pad: int = 16) -> torch.Tensor:
+        """Run model in overlapping tiles to strictly constrain peak memory usage on CPU/GPU."""
+        batch, channel, height, width = x.shape
+        output_height = height * self.scale
+        output_width = width * self.scale
+
+        output = torch.zeros((batch, channel, output_height, output_width), dtype=x.dtype, device=x.device)
+        stride = tile_size - 2 * tile_pad
+
+        y_starts = list(range(0, height, stride))
+        x_starts = list(range(0, width, stride))
+
+        for y_start in y_starts:
+            for x_start in x_starts:
+                in_y0 = max(y_start - tile_pad, 0)
+                in_y1 = min(y_start + stride + tile_pad, height)
+                in_x0 = max(x_start - tile_pad, 0)
+                in_x1 = min(x_start + stride + tile_pad, width)
+
+                in_tile = x[:, :, in_y0:in_y1, in_x0:in_x1]
+                out_tile = self.model(in_tile)
+
+                valid_y0 = y_start
+                valid_y1 = min(y_start + stride, height)
+                valid_x0 = x_start
+                valid_x1 = min(x_start + stride, width)
+
+                tile_crop_y0 = (valid_y0 - in_y0) * self.scale
+                tile_crop_y1 = tile_crop_y0 + (valid_y1 - valid_y0) * self.scale
+                tile_crop_x0 = (valid_x0 - in_x0) * self.scale
+                tile_crop_x1 = tile_crop_x0 + (valid_x1 - valid_x0) * self.scale
+
+                out_y0 = valid_y0 * self.scale
+                out_y1 = valid_y1 * self.scale
+                out_x0 = valid_x0 * self.scale
+                out_x1 = valid_x1 * self.scale
+
+                output[:, :, out_y0:out_y1, out_x0:out_x1] = out_tile[:, :, tile_crop_y0:tile_crop_y1, tile_crop_x0:tile_crop_x1]
+
+        return output
+
     @torch.no_grad()
     def enhance(self, image: Union[Image.Image, np.ndarray]) -> Image.Image:
         """Run super-resolution enhancement on an input RGB image.
@@ -139,14 +181,20 @@ class StudentInference:
         tensor_in = torch.from_numpy(np_img).permute(2, 0, 1).unsqueeze(0).float() / 255.0
         tensor_in = tensor_in.to(self.device)
 
-        # Forward execution
-        sr_tensor = self.model(tensor_in)
+        # Forward execution: use tiled inference for larger images (> 384px) to prevent OOM
+        if orig_h > 384 or orig_w > 384:
+            sr_tensor = self._forward_tiled(tensor_in, tile_size=256, tile_pad=16)
+        else:
+            sr_tensor = self.model(tensor_in)
 
-        # Clamp output to range [0.0, 1.0]
+        del tensor_in
+
+        # Post-process tensor directly to uint8 on PyTorch to avoid allocating multiple 56+ MiB float32 NumPy arrays
         sr_tensor = torch.clamp(sr_tensor, 0.0, 1.0)
-
-        # Post-process tensor back to uint8 numpy array
-        sr_np = (sr_tensor.squeeze(0).permute(1, 2, 0).cpu().numpy() * 255.0).round().astype(np.uint8)
+        sr_tensor = (sr_tensor.mul(255.0).add_(0.5)).clamp_(0.0, 255.0).to(torch.uint8)
+        sr_np = sr_tensor.squeeze(0).permute(1, 2, 0).cpu().numpy()
+        del sr_tensor
+        gc.collect()
 
         target_w = orig_w * self.scale
         target_h = orig_h * self.scale

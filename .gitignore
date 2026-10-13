@@ -1,36 +1,192 @@
-# Environment Variables
+# ==============================================================================
+# Environment Variables & Secret Configuration
+# ==============================================================================
 .env
+.env.*
 **/.env
+**/.env.*
+!.env.example
+!**/.env.example
 
-# Python Virtual Environment
+# ==============================================================================
+# Python Virtual Environments
+# ==============================================================================
 venv/
 .venv/
+env/
+ENV/
+**/venv/
+**/.venv/
+**/env/
 
-# Python Cache
+# ==============================================================================
+# Python Cache & Build Artifacts
+# ==============================================================================
 __pycache__/
+**/__pycache__/
 *.py[cod]
+*$py.class
+*.so
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Model Checkpoints
-*.pth
-*.pt
-
-# Runtime Outputs
-backend/uploads/
-backend/outputs/
+# Testing & Type Checking Caches
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+**/.mypy_cache/
+.ruff_cache/
+**/.ruff_cache/
+.coverage
+htmlcov/
 
 # Notebook Checkpoints
 .ipynb_checkpoints/
+**/.ipynb_checkpoints/
 
-# IDE
+# ==============================================================================
+# Model Checkpoints & Weights
+# ==============================================================================
+*.pth
+*.pt
+*.ckpt
+*.onnx
+*.tflite
+
+# Preserve Production Student Checkpoints required for deployment & runtime inference
+!checkpoints/student/best_student_x2.pth
+!checkpoints/student/best_student_x4.pth
+
+# Intermediate & Temporary Checkpoints
+latest_student_*.pth
+latest.pth
+epoch_*.pth
+inter_*.pth
+
+# ==============================================================================
+# Training & Experimentation Artifacts
+# ==============================================================================
+# TensorBoard & Experiment Logs
+runs/
+**/runs/
+events.out.tfevents.*
+*.log
+logs/
+**/logs/
+
+# Training Outputs & Caches
+training/outputs/
+outputs/
+**/outputs/
+training_data/
+tmp_data/
+
+# ==============================================================================
+# Datasets (Training & Benchmark Datasets)
+# ==============================================================================
+# Local Dataset Directories
+datasets/
+**/datasets/
+data/
+**/data/
+
+# Specific Benchmark & Training Datasets
+DIV2K/
+DIV2K_*/
+**/DIV2K/
+**/DIV2K_*/
+Set5/
+Set5_HR/
+**/Set5/
+**/Set5_HR/
+Set14/
+Set14_HR/
+**/Set14/
+**/Set14_HR/
+BSD68/
+**/BSD68/
+Urban100/
+**/Urban100/
+Manga109/
+**/Manga109/
+
+# Dataset Archives
+*.tar.gz
+*.tar
+*.zip
+*.7z
+
+# ==============================================================================
+# Evaluation, Testing & Benchmark Artifacts
+# ==============================================================================
+# Local Evaluation Reports & Generated Artifacts
+details/
+**/details/
+evaluation/
+**/evaluation/
+benchmark_outputs/
+eval_outputs/
+test_outputs/
+
+# Raw Evaluation JSON Files & Results
+raw_evaluation_results.json
+evaluation_results.json
+eval_results.json
+
+# Scratch & Temporary Test Artifacts
+scratch/
+**/scratch/
+
+# ==============================================================================
+# Frontend Dependencies & Build Outputs
+# ==============================================================================
+node_modules/
+**/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==============================================================================
+# Runtime & Application Uploads/Outputs
+# ==============================================================================
+backend/uploads/
+backend/outputs/
+
+# ==============================================================================
+# IDE & Editor Configurations
+# ==============================================================================
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
 
-# OS Files
+# ==============================================================================
+# Operating System Temporary Files
+# ==============================================================================
 .DS_Store
+**/.DS_Store
 Thumbs.db
-
-# Virtual Environments
-venv/
-.venv/
-**/venv/
-**/.venv/
+**/Thumbs.db
+Desktop.ini
+**/Desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/

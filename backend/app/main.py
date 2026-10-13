@@ -69,7 +69,7 @@ async def root():
             "version": "2.0.0",
             "status": "running",
             "docs": "/docs",
-            "supported_scales": [2, 4, 8],
+            "supported_scales": [2, 4],
         }
     )
 

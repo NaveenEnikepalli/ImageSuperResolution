@@ -43,8 +43,26 @@ def test_models_endpoint():
     response = client.get("/api/models")
     assert response.status_code == 200
     data = response.json()
-    assert set(data["supported_scales"]) == {2, 4, 8}
+    assert set(data["supported_scales"]) == {2, 4}
     assert "2" in data["models"] or 2 in data["models"]
+    assert "4" in data["models"] or 4 in data["models"]
+    assert "8" not in data["models"] and 8 not in data["models"]
+
+
+def test_enhance_endpoint_scale_8_rejected():
+    """Test POST /api/enhance rejects scale=8 now that SwinIR x8 is removed from production."""
+    img = Image.new("RGB", (32, 32), color="green")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+
+    response = client.post(
+        "/api/enhance",
+        files={"image": ("test.png", buf, "image/png")},
+        data={"scale": 8},
+    )
+    assert response.status_code == 400
+    assert "Unsupported scale factor" in response.json()["detail"]
 
 
 def test_enhance_endpoint_invalid_scale():

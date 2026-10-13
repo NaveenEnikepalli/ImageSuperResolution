@@ -221,11 +221,11 @@ class SwinIRInference:
         else:
             sr_tensor = self.model(tensor_in)
 
-        # Clamp output to [0.0, 1.0]
+        # Clamp output to [0.0, 1.0] and convert directly to uint8
         sr_tensor = torch.clamp(sr_tensor, 0.0, 1.0)
-
-        # Post-process tensor back to uint8 numpy array
-        sr_np = (sr_tensor.squeeze(0).permute(1, 2, 0).cpu().numpy() * 255.0).round().astype(np.uint8)
+        sr_tensor = (sr_tensor.mul(255.0).add_(0.5)).clamp_(0.0, 255.0).to(torch.uint8)
+        sr_np = sr_tensor.squeeze(0).permute(1, 2, 0).cpu().numpy()
+        del sr_tensor
 
         target_w = orig_w * self.scale
         target_h = orig_h * self.scale

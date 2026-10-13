@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Zap, Layers, Cpu } from 'lucide-react';
+import { Zap, Layers } from 'lucide-react';
 
 const SCALE_CONFIGS = [
   {
@@ -23,17 +23,6 @@ const SCALE_CONFIGS = [
     color: '#7c3aed',
     bgColor: '#f5f3ff',
     borderColor: '#8b5cf6',
-  },
-  {
-    scale: 8,
-    title: '8× Enhancement',
-    model: 'SwinIR-M Transformer',
-    params: '~11.8M Params',
-    description: 'High-capacity Swin Vision Transformer engine.',
-    icon: Cpu,
-    color: '#0891b2',
-    bgColor: '#ecfeff',
-    borderColor: '#06b6d4',
   },
 ];
 
