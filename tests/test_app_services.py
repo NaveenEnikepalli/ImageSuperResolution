@@ -22,7 +22,6 @@ from backend.app.services.model_service import get_model_engine, clear_model_cac
 from backend.app.services.enhancement_service import enhance_image
 from inference.model_selector import select_model, SUPPORTED_SCALES
 from inference.student_inference import StudentInference
-from inference.swinir_inference import SwinIRInference
 
 
 # Helper function to generate test PNG image bytes
