@@ -1,0 +1,20 @@
+# Render Blueprint configuration for PixelLift Image Super-Resolution API
+# Deploys FastAPI backend as an independent Docker Web Service on Render
+services:
+  - type: web
+    name: pixellift-api
+    runtime: docker
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: MODEL_DIR
+        value: /app/checkpoints/student
+      - key: CORS_ORIGINS
+        value: "*"

@@ -4,12 +4,16 @@ Author: Antigravity
 Purpose: Centralized backend configuration settings for PixelLift API.
 """
 
+import os
 from pathlib import Path
 from typing import Dict, Any, List
 
 # Paths
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 ROOT_DIR = BACKEND_DIR.parent
+
+# Model Checkpoints Directory
+MODEL_DIR = Path(os.environ.get("MODEL_DIR", str(ROOT_DIR / "checkpoints" / "student"))).resolve()
 
 # Upload Limits & Supported Types
 MAX_UPLOAD_SIZE_MB: int = 10

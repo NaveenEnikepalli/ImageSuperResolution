@@ -5,6 +5,7 @@ Purpose: High-level inference pipeline for Student Super-Resolution models (x2 a
 Handles device assignment, checkpoint loading, pre/post-processing, and clamping.
 """
 
+import os
 import gc
 import logging
 from pathlib import Path
@@ -43,26 +44,41 @@ class StudentInference:
         else:
             self.device = torch.device(device)
 
-        # Resolve default checkpoint path if not provided or if relative path doesn't exist
-        if checkpoint_path is None:
-            root_dir = Path(__file__).resolve().parents[1]
-            candidates = [
+        # Resolve checkpoint path: check explicit path, MODEL_DIR env var, then default locations
+        root_dir = Path(__file__).resolve().parents[1]
+        model_dir_env = os.environ.get("MODEL_DIR")
+
+        if checkpoint_path is not None:
+            path_obj = Path(checkpoint_path)
+            if not path_obj.is_absolute():
+                candidates = []
+                if model_dir_env:
+                    candidates.append(Path(model_dir_env) / path_obj.name)
+                    candidates.append(Path(model_dir_env) / path_obj)
+                candidates.append(root_dir / path_obj)
+                candidates.append(path_obj)
+                path_obj = next((p for p in candidates if p.exists()), candidates[0])
+            self.checkpoint_path = path_obj.resolve()
+        else:
+            candidates = []
+            if model_dir_env:
+                m_dir = Path(model_dir_env)
+                if not m_dir.is_absolute():
+                    m_dir = (root_dir / m_dir) if (root_dir / m_dir).exists() else m_dir.resolve()
+                candidates.extend([
+                    m_dir / f"best_student_x{self.scale}.pth",
+                    m_dir / f"student_x{self.scale}.pth",
+                    m_dir / f"best_student_x{self.scale}.pt",
+                    m_dir / f"student_x{self.scale}.pt",
+                ])
+            candidates.extend([
                 root_dir / "checkpoints" / "student" / f"best_student_x{self.scale}.pth",
                 root_dir / "checkpoints" / "student" / f"student_x{self.scale}.pth",
+                root_dir / "checkpoints" / f"best_student_x{self.scale}.pth",
                 Path("checkpoints/student") / f"best_student_x{self.scale}.pth",
                 Path("checkpoints/student") / f"student_x{self.scale}.pth",
-            ]
-            checkpoint_path = next((p for p in candidates if p.exists()), candidates[0])
-        else:
-            path_obj = Path(checkpoint_path)
-            if not path_obj.exists():
-                root_dir = Path(__file__).resolve().parents[1]
-                candidate_in_root = root_dir / path_obj
-                if candidate_in_root.exists():
-                    path_obj = candidate_in_root
-            checkpoint_path = path_obj
-
-        self.checkpoint_path = Path(checkpoint_path)
+            ])
+            self.checkpoint_path = next((p.resolve() for p in candidates if p.exists()), candidates[0].resolve())
 
         # Instantiate StudentModel with scale parameter
         self.model = StudentModel(
@@ -87,11 +103,10 @@ class StudentInference:
     def _load_checkpoint(self) -> None:
         """Load pretrained state dict weights into StudentModel."""
         if not self.checkpoint_path.exists():
-            logger.warning(
-                f"Student x{self.scale} checkpoint not found at {self.checkpoint_path}. "
-                f"Using uninitialized weights (smoke/testing mode)."
+            raise FileNotFoundError(
+                f"Required Student x{self.scale} checkpoint not found at: '{self.checkpoint_path}'. "
+                f"Please ensure 'best_student_x{self.scale}.pth' exists or configure the MODEL_DIR environment variable."
             )
-            return
 
         logger.info(f"Loading Student x{self.scale} checkpoint from: {self.checkpoint_path}")
         raw_data = torch.load(self.checkpoint_path, map_location="cpu")

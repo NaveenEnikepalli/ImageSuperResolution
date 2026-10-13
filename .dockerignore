@@ -1,0 +1,129 @@
+# ==============================================================================
+# Git and GitHub
+# ==============================================================================
+.git/
+.github/
+
+# ==============================================================================
+# Python Virtual Environments & Development Caches
+# ==============================================================================
+.venv/
+venv/
+**/venv/
+**/.venv/
+env/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+**/.mypy_cache/
+.ruff_cache/
+**/.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# ==============================================================================
+# Frontend
+# ==============================================================================
+frontend/
+node_modules/
+**/node_modules/
+
+# ==============================================================================
+# Training, Datasets & Evaluation Artifacts
+# ==============================================================================
+# Datasets
+datasets/
+**/datasets/
+data/
+**/data/
+DIV2K/
+DIV2K_*/
+**/DIV2K/
+**/DIV2K_*/
+Set5/
+Set5_HR/
+**/Set5/
+**/Set5_HR/
+Set14/
+Set14_HR/
+**/Set14/
+**/Set14_HR/
+BSD68/
+Urban100/
+Manga109/
+
+# Evaluation & Benchmark Outputs
+details/
+**/details/
+evaluation/
+**/evaluation/
+benchmark_outputs/
+eval_outputs/
+test_outputs/
+scratch/
+**/scratch/
+raw_evaluation_results.json
+evaluation_results.json
+eval_results.json
+
+# Training Outputs & TensorBoard Logs
+runs/
+**/runs/
+events.out.tfevents.*
+*.log
+logs/
+**/logs/
+training/outputs/
+outputs/
+**/outputs/
+training/checkpoints/
+
+# ==============================================================================
+# Model Checkpoints (Exclude Teacher weights & temporary checkpoints)
+# ==============================================================================
+# Exclude teacher checkpoints (~67MB each) and SwinIR transformer weights
+checkpoints/teacher/
+checkpoints/swinir/
+*.ckpt
+
+# Exclude temporary student training checkpoints
+checkpoints/student/latest_student_*.pth
+checkpoints/student/latest.pth
+
+# Ensure required Student checkpoints are explicitly included in Docker context
+!checkpoints/student/best_student_x2.pth
+!checkpoints/student/best_student_x4.pth
+
+# ==============================================================================
+# Environment & Secret Files
+# ==============================================================================
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# ==============================================================================
+# Documentation, Tests & OS Files
+# ==============================================================================
+docs/
+tests/
+backend/tests/
+training/tests/
+backend/uploads/
+backend/outputs/
+.DS_Store
+**/.DS_Store
+Thumbs.db
+**/Thumbs.db
+Desktop.ini
+**/Desktop.ini
+.vscode/
+.idea/

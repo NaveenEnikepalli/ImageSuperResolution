@@ -1,0 +1,22 @@
+# Docker Compose for PixelLift Image Super-Resolution API
+# Run locally with: docker compose up --build
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pixellift-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+      - MODEL_DIR=/app/checkpoints/student
+      - CORS_ORIGINS=*
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
